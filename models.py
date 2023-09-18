@@ -8,6 +8,15 @@ from dataclasses import dataclass
 
 
 @dataclass
+class PersonalInfo:
+    '''
+    User details
+    '''
+    first_name: str
+    last_name: str
+
+
+@dataclass
 class Experience:
     '''
     Experience Class
@@ -41,3 +50,16 @@ class Skill:
     name: str
     proficiency: str
     logo: str
+
+
+@dataclass
+class Project:
+    '''
+    Project class
+    '''
+    name: str
+    language: str
+    description: str
+    link: str
+    
+    
