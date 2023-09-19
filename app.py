@@ -49,8 +49,8 @@ def experience():
 
     if request.method == 'POST':
         request_data = request.get_json()
-        experienceData = Experience(**request_data)
-        data["experience"].append(experienceData)
+        experience_data = Experience(**request_data)
+        data["experience"].append(experience_data)
         index = len(data["experience"]) - 1
         return jsonify({"index": index})
 
