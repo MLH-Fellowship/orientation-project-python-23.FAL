@@ -29,7 +29,9 @@ data = {
               "example-logo.png")
     ], 
     "contact": [
-
+        Contact("John Doe",
+                "+447123456789",
+                "johndoe@gmail.com")
     ]
 }
 
@@ -88,7 +90,7 @@ def contact():
     Handles Contact requests
     '''
     if request.method == 'GET':
-        return jsonify(data)
+        return {"contact": data["contact"]}
 
     if request.method == 'POST':
         api_data = request.get_json()
@@ -104,6 +106,32 @@ def contact():
             phone = "+" + phone
         
         contact = Contact(name, phone, email)
-        data["contact"] = contact
+        data["contact"].append(contact)
 
-    return jsonify(data)
+    return jsonify(
+        {"Contact Added": contact}
+    )    
+
+@app.route('/resume/contact/<int:contact_id>', methods=['PUT'])
+def update_contact(contact_id):
+    '''
+    Update a contact
+    '''
+    api_data = request.get_json()
+
+    if api_data is not None:
+        name = api_data.get("name")
+        phone = api_data.get("phone")
+        email = api_data.get("email")
+
+        contact_list = data["contact"]
+        contact = [c for c in contact_list if c.id == contact_id][0]
+
+        # Update the contact
+        contact.name = name
+        contact.phone = phone
+        contact.email = email
+
+    return jsonify(
+        {"Contact Updated": contact}
+    )
