@@ -102,7 +102,7 @@ def user():
         if not phone.startswith("+"):
             phone = "+" + phone
 
-        user = User(name, phone, email)  # pylint: disable=W0612
+        user = User(name, phone, email)  # pylint: disable=W0621
         data["user"].append(user)
 
     return jsonify({"A person Added": user})
@@ -121,9 +121,7 @@ def update_user(user_id):
         email = api_data.get("email")
 
         user_list = data["user"]
-        user = [user for user in user_list if user.id == user_id][
-            0
-        ]  # pylint: disable=W0612
+        user = [user for user in user_list if user.id == user_id][0]  # pylint: disable=W0621
 
         # Update the contact
         user.name = name
