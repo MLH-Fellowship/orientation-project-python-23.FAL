@@ -1,4 +1,4 @@
 flask
 pytest
 pylint
-sqlite
+sqlite3
