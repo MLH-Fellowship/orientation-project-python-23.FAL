@@ -74,48 +74,48 @@ def test_skill():
     assert response.json[item_id] == example_skill
 
 
-def test_contact():
+def test_user():
     '''
     Add a new contact and then get all contacts. 
     
     Check that it returns the new contact in that list
     '''
-    example_contact = {
+    example_user = {
         "name": "John Doe",
         "phone": "1234567890",
         "email": "johndoe@gmail.com"}
     
-    post_response = app.test_client().post('/resume/contact', json=example_contact)
+    post_response = app.test_client().post('/resume/user', json=example_user)
     assert post_response.status_code == 200
 
-    get_response = app.test_client().get('/resume/contact')
+    get_response = app.test_client().get('/resume/user')
     assert get_response.status_code == 200
 
     
-    contact = get_response.json["contact"]
-    assert contact != {}
-    assert len(contact) > 0
+    user = get_response.json["user"]
+    assert user != {}
+    assert len(user) > 0
 
-def test_contact_update():
+def test_user_update():
     '''
     Add a new contact and then update it. 
     
     Check that it returns the updated contact
     '''
-    example_contact = {
+    example_user = {
         "name": "John Doe",
         "phone": "1234567890",
         "email": "johndoe@gmail.com"}
     
-    update_contact = {
+    update_user = {
         "name": "Jane Doe",
         "phone": "0987654321",
         "email": "johndoer@yahoo.com"}
     
-    get_response = app.test_client().get('/resume/contact')
+    get_response = app.test_client().get('/resume/user')
     assert get_response.status_code == 200
 
-    item_id = [c for c in get_response.json['contact'] if c['name'] == example_contact['name']][0]['id']
+    item_id = [c for c in get_response.json['user'] if c['name'] == example_user['name']][0]['id']
 
-    put_response = app.test_client().put(f'/resume/contact/{item_id}', json=update_contact)
+    put_response = app.test_client().put(f'/resume/user/{item_id}', json=update_user)
     assert put_response.status_code == 200
