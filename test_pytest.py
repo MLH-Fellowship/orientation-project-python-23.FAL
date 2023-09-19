@@ -1,8 +1,9 @@
 '''
 Tests in Pytest
 '''
-from app import app
 import json
+from app import app
+
 
 def test_client():
     '''
