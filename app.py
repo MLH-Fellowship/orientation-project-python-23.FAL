@@ -63,6 +63,7 @@ def education():
             index = int(index)
             if 0 <= index < len(data["education"]):
                 return jsonify(data["education"][index])
+            return jsonify({"error": "Education entry not found"}), 404
         return jsonify(data["education"])
 
     if request.method == 'POST':
@@ -70,7 +71,6 @@ def education():
         new_education = Education(**new_education_data)
         data["education"].append(new_education)
         new_education_index = len(data["education"]) - 1
-
         return jsonify({"id": new_education_index})
 
     return jsonify({})
