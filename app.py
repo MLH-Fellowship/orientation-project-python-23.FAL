@@ -58,8 +58,15 @@ def education():
     Handles education requests
     '''
     if request.method == 'GET':
-        education_list = [edu.__dict__ for edu in data["education"]]
-        return jsonify(education_list)
+        index = request.args.get('index')
+        if index is not None and index.isdigit():
+            index = int(index)
+            if 0 <= index < len(data["education"]):
+                return jsonify(data["education"][index])
+            else:
+                return jsonify({"message": "Education entry not found."}), 404
+        
+        return jsonify(data["education"])
 
     if request.method == 'POST':
         new_education_data = request.get_json()
