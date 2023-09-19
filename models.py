@@ -52,7 +52,7 @@ class User:
     Contact Class
     """
 
-    id: int
+    id: int  # pylint: disable=C0103
     name: str
     phone: str
     email: str
