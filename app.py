@@ -3,7 +3,6 @@ Flask Application
 '''
 from flask import Flask, jsonify, request
 from models import Experience, Education, Skill
-from construct_resume import buildResume
 
 app = Flask(__name__)
 
@@ -39,10 +38,6 @@ def hello_world():
     '''
     return jsonify({"message": "Hello, World!"})
 
-@app.route('/resume/build')
-def build_resume():
-    resume = buildResume()
-    return jsonify({"file": "document"})
 
 @app.route('/resume/experience', methods=['GET', 'POST'])
 def experience():

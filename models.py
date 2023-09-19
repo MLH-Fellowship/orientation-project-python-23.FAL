@@ -61,5 +61,5 @@ class Project:
     language: str
     description: str
     link: str
-    
+
     
