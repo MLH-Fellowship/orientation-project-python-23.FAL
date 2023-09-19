@@ -2,7 +2,7 @@
 Tests in Pytest
 '''
 from app import app
-
+import json
 
 def test_client():
     '''
@@ -11,6 +11,18 @@ def test_client():
     response = app.test_client().get('/test')
     assert response.status_code == 200
     assert response.json['message'] == "Hello, World!"
+
+def test_post_request(data: object) -> bool:
+    '''
+    Validation to determine if the POST request is in the correct format
+    '''
+
+    try:
+        json.loads(data)
+    except ValueError as e:
+        raise ValueError("'Data' is not in valid JSON format, please try again: ", e)
+  
+    return True
 
 
 def test_experience():
@@ -28,10 +40,11 @@ def test_experience():
         "logo": "example-logo.png"
     }
 
-    item_id = app.test_client().post('/resume/experience',
-                                     json=example_experience).json['id']
-    response = app.test_client().get('/resume/experience')
-    assert response.json[item_id] == example_experience
+    if (test_post_request(example_experience)):
+        item_id = app.test_client().post('/resume/experience',
+                                        json=example_experience).json['id']
+        response = app.test_client().get('/resume/experience')
+        assert response.json[item_id] == example_experience
 
 
 def test_education():
@@ -48,11 +61,13 @@ def test_education():
         "grade": "86%",
         "logo": "example-logo.png"
     }
-    item_id = app.test_client().post('/resume/education',
-                                     json=example_education).json['id']
 
-    response = app.test_client().get('/resume/education')
-    assert response.json[item_id] == example_education
+    if (test_post_request(example_education)):
+        item_id = app.test_client().post('/resume/education',
+                                        json=example_education).json['id']
+
+        response = app.test_client().get('/resume/education')
+        assert response.json[item_id] == example_education
 
 
 def test_skill():
@@ -67,8 +82,17 @@ def test_skill():
         "logo": "example-logo.png"
     }
 
-    item_id = app.test_client().post('/resume/skill',
-                                     json=example_skill).json['id']
+    if (test_post_request(example_skill)):
+        item_id = app.test_client().post('/resume/skill',
+                                        json=example_skill).json['id']
 
-    response = app.test_client().get('/resume/skill')
-    assert response.json[item_id] == example_skill
+        response = app.test_client().get('/resume/skill')
+        assert response.json[item_id] == example_skill
+
+
+
+    
+
+
+
+
