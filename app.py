@@ -2,7 +2,7 @@
 Flask Application
 '''
 from flask import Flask, jsonify, request
-from models import Experience, Education, Skill, Contact
+from models import Experience, Education, Skill, User
 
 app = Flask(__name__)
 
@@ -28,8 +28,8 @@ data = {
               "1-2 Years",
               "example-logo.png")
     ], 
-    "contact": [
-        Contact("John Doe",
+    "user": [
+        User("John Doe",
                 "+447123456789",
                 "johndoe@gmail.com")
     ]
@@ -84,13 +84,13 @@ def skill():
 
     return jsonify({})
 
-@app.route('/resume/contact', methods=['GET', 'POST'])
-def contact():
+@app.route('/resume/user', methods=['GET', 'POST'])
+def user():
     '''
-    Handles Contact requests
+    Handles user requests
     '''
     if request.method == 'GET':
-        return {"contact": data["contact"]}
+        return {"user": data["user"]}
 
     if request.method == 'POST':
         api_data = request.get_json()
@@ -105,15 +105,15 @@ def contact():
         if not phone.startswith("+"):
             phone = "+" + phone
         
-        contact = Contact(name, phone, email)
-        data["contact"].append(contact)
+        user = User(name, phone, email)
+        data["user"].append(user)
 
     return jsonify(
-        {"Contact Added": contact}
+        {"A person Added": user}
     )    
 
-@app.route('/resume/contact/<int:contact_id>', methods=['PUT'])
-def update_contact(contact_id):
+@app.route('/resume/user/<int:user_id>', methods=['PUT'])
+def update_user(user_id):
     '''
     Update a contact
     '''
@@ -124,14 +124,14 @@ def update_contact(contact_id):
         phone = api_data.get("phone")
         email = api_data.get("email")
 
-        contact_list = data["contact"]
-        contact = [c for c in contact_list if c.id == contact_id][0]
+        user_list = data["user"]
+        user = [user for user in user_list if user.id == user_id][0]
 
         # Update the contact
-        contact.name = name
-        contact.phone = phone
-        contact.email = email
+        user.name = name
+        user.phone = phone
+        user.email = email
 
     return jsonify(
-        {"Contact Updated": contact}
+        {"Person Info Updated": user}
     )
