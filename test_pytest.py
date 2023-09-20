@@ -90,7 +90,7 @@ def test_delete_skill():
 
     assert response.status_code == 200  # Check for a successful delete
     assert "message" in response.json
-    assert response.json["message"] == f"Skill "{example_skill[skill_name]}" deleted successfully"
+    assert response.json["message"] == f"Skill {example_skill[skill_name]} deleted successfully"
 
     # Check that the deleted skill is no longer in the list
     response = app.test_client().get('/resume/skill')
