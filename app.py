@@ -45,7 +45,7 @@ def experience():
     Handle experience requests
     '''
     if request.method == 'GET':
-        return jsonify()
+        return jsonify({})
 
     if request.method == 'POST':
         return jsonify({})
@@ -66,15 +66,30 @@ def education():
     return jsonify({})
 
 
-@app.route('/resume/skill', methods=['GET', 'POST'])
+@app.route('/resume/skill', methods=['GET', 'POST', 'PUT'])
 def skill():
     '''
     Handles Skill requests
     '''
     if request.method == 'GET':
-        return jsonify({})
+        skills_data = data["skill"]
+        return jsonify(skills_data)
 
     if request.method == 'POST':
         return jsonify({})
+
+    if request.method == 'PUT':
+        skill_data = request.get_json()
+        skill_id = skill_data.get("id")
+
+        if skill_id is not None and skill_id >= 0 and skill_id < len(data["skill"]):
+            data["skill"][skill_id] = Skill(
+                skill_data.get("name"),
+                skill_data.get("proficiency"),
+                skill_data.get("logo")
+            )
+            return jsonify(data['skill'][skill_id])
+
+        return jsonify({"error": "Invalid Skill ID"}), 400
 
     return jsonify({})
