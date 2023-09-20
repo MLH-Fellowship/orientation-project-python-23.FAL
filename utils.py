@@ -1,3 +1,7 @@
+"""
+Function utilities to be used througout the application
+"""
+
 def validate_index(index, size):
     """
     Utility function to ensure that an index is valid
