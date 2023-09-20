@@ -1,17 +1,18 @@
 # pylint: disable=R0913
 
-'''
+"""
 Models for the Resume API. Each class is related to
-'''
+"""
 
 from dataclasses import dataclass
 
 
 @dataclass
 class Experience:
-    '''
+    """
     Experience Class
-    '''
+    """
+
     title: str
     company: str
     start_date: str
@@ -22,9 +23,10 @@ class Experience:
 
 @dataclass
 class Education:
-    '''
+    """
     Education Class
-    '''
+    """
+
     course: str
     school: str
     start_date: str
@@ -35,9 +37,31 @@ class Education:
 
 @dataclass
 class Skill:
-    '''
+    """
     Skill Class
-    '''
+    """
+
     name: str
     proficiency: str
     logo: str
+
+
+@dataclass
+class User:
+    """
+    Contact Class
+    """
+
+    id: int  # pylint: disable=C0103
+    name: str
+    phone: str
+    email: str
+
+    id_counter = 1
+
+    def __init__(self, name, phone, email):
+        self.id = User.id_counter
+        User.id_counter += 1
+        self.name = name
+        self.phone = phone
+        self.email = email
