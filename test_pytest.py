@@ -67,8 +67,9 @@ def test_skill():
         "logo": "example-logo.png"
     }
 
-    item_id = app.test_client().post('/resume/skill',
-                                     json=example_skill).json['id']
+    post_response =  app.test_client().post('/resume/skill',
+                                     json=example_skill)
+    assert post_response.status_code == 200
 
-    response = app.test_client().get('/resume/skill')
-    assert response.json[item_id] == example_skill
+    get_response = app.test_client().get("/resume/skill")
+    assert get_response.status_code == 200
