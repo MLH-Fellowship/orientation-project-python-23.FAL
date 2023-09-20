@@ -81,6 +81,7 @@ def skill():
 
     return jsonify({})
 
+
 def check_user_data(api_data):
     """
     Check if data is valid
@@ -90,15 +91,15 @@ def check_user_data(api_data):
         phone = api_data.get("phone")
         email = api_data.get("email")
 
-    return name, phone, email
-        
+    return name, phone, email  # pylint: disable=R1710
+
 @app.route("/resume/user", methods=["GET", "POST"])
-def user():
+def user(): # pylint: disable=R1710
     """
     Handles user requests
     """
     if request.method == "GET":
-        return {"user": data["user"]}
+        return {"user": data["user"]}  # pylint: disable=R1710
 
     if request.method == "POST":
         api_data = request.get_json()
@@ -107,7 +108,7 @@ def user():
         if api_data is None or api_data == {}:
             return jsonify({"message": "No data provided"}), 400
 
-        name, phone, email = check_user_data(api_data)        
+        name, phone, email = check_user_data(api_data)
 
         if not phone.startswith("+"):
             phone = "+" + phone
