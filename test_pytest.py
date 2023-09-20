@@ -59,11 +59,22 @@ def test_skill():
     '''
     Add a new skill and then get all skills. 
     
-    Check that it returns the new skill in that list
+    Check that it returns the new skill in that list.
+
+    Make a GET request for a specific Skill, with an index as input.
+
+    Check that the specific Skill is returned in JSON format
     '''
     example_skill = {
         "name": "JavaScript",
         "proficiency": "2-4 years",
+        "logo": "example-logo.png"
+    }
+
+    # specific Skill to be tested is the first Skill that already exists
+    specific_skill = {
+        "name": "Python",
+        "proficiency": "1-2 Years",
         "logo": "example-logo.png"
     }
 
@@ -72,3 +83,6 @@ def test_skill():
 
     response = app.test_client().get('/resume/skill')
     assert response.json[item_id] == example_skill
+
+    specific_json = app.test_client().get('/resume/skill?index=0').json
+    assert specific_json == specific_skill
