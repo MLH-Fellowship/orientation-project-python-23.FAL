@@ -3,6 +3,7 @@ Flask Application
 '''
 from flask import Flask, jsonify, request
 from models import Experience, Education, Skill
+from utils import correct_spellings
 
 app = Flask(__name__)
 
@@ -78,3 +79,17 @@ def skill():
         return jsonify({})
 
     return jsonify({})
+
+
+@app.route('/check-spelling', methods=['POST'])
+def check_spellings():
+    '''
+    Handles spelling requests
+    '''
+    if request.method == 'POST':
+        data = request.get_json()
+
+        sentence = data['sentence']
+        corrected_sentence = correct_spellings(sentence)
+        
+        return jsonify({ "before": sentence, "after": str(corrected_sentence) })
