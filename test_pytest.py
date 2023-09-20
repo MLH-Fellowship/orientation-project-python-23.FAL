@@ -53,6 +53,12 @@ def test_education():
 
     response = app.test_client().get('/resume/education')
     assert response.json[item_id] == example_education
+    
+    response =  app.test_client().delete('/resume/education/1')
+    assert response.status_code ==  204
+    
+    response = app.test_client().delete('/resume/education/100')
+    assert response.status_code == 404
 
 
 def test_skill():
@@ -72,3 +78,9 @@ def test_skill():
 
     response = app.test_client().get('/resume/skill')
     assert response.json[item_id] == example_skill
+    
+    response = app.test_client().get('/resume/skill/1')
+    assert response.status_code == 200
+    
+    response = app.test_client().get('/resume/skill/1000')
+    assert response.status_code == 404
