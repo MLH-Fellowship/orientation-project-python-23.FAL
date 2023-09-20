@@ -83,7 +83,13 @@ def skill():
     '''
     if request.method == 'GET':
         index = request.args.get("index")
-        return jsonify(data["skill"][index])
+        # if an index is not provided, return all Skills
+        if index == None:
+            return jsonify(data["skill"])
+        index = int(index)
+        if index > -1 and index < len(data["skill"]):
+            return jsonify(data["skill"][index])
+        return jsonify({"error": "Invalid index"}), 404
 
     if request.method == 'POST':
         return jsonify({})
