@@ -1,23 +1,26 @@
 '''
-Tests in Pytest
+Title: Tests in Pytest
+Author: Your Name
+Date: September 20, 2023
+Description: This module contains unit tests for the 'app' using Pytest.
 '''
-from app import app
 
+from app import app
 
 def test_client():
     '''
-    Makes a request and checks the message received is the same
+    Test Case: test_client
+    Description: Makes a request and checks the message received is the same.
     '''
     response = app.test_client().get('/test')
     assert response.status_code == 200
     assert response.json['message'] == "Hello, World!"
 
-
 def test_experience():
     '''
-    Add a new experience and then get all experiences. 
-    
-    Check that it returns the new experience in that list
+    Test Case: test_experience
+    Description: Add a new experience and then get all experiences.
+                 Check that it returns the new experience in that list.
     '''
     example_experience = {
         "title": "Software Developer",
@@ -34,12 +37,11 @@ def test_experience():
     response = app.test_client().get('/resume/experience')
     assert response.json[item_id] == example_experience
 
-
 def test_education():
     '''
-    Add a new education and then get all educations. 
-    
-    Check that it returns the new education in that list
+    Test Case: test_education
+    Description: Add a new education and then get all educations.
+                 Check that it returns the new education in that list.
     '''
     example_education = {
         "course": "Engineering",
@@ -56,12 +58,11 @@ def test_education():
     response = app.test_client().get('/resume/education')
     assert response.json[item_id] == example_education
 
-
 def test_skill():
     '''
-    Add a new skill and then get all skills. 
-    
-    Check that it returns the new skill in that list
+    Test Case: test_skill
+    Description: Add a new skill and then get all skills.
+                 Check that it returns the new skill in that list.
     '''
     example_skill = {
         "name": "JavaScript",
