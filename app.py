@@ -77,14 +77,10 @@ def skill():
     Handles Skill requests
     '''
     if request.method == 'GET':
-        return data["skill"]
+        return jsonify({})
 
     if request.method == 'POST':
-        new_skill = request.get_json()
-        skill = Skill(**new_skill)
-        data["skill"].append(skill)
-        index = len(data["experience"]) - 1
-        return jsonify({"id": index})
+        return jsonify({})
 
     return jsonify({})
 
