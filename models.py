@@ -18,7 +18,7 @@ class Experience:
     end_date: str
     description: str
     logo: str
-
+    order: int  # Adding the 'order' attribute to help setting the order of the class
 
 @dataclass
 class Education:
@@ -31,7 +31,7 @@ class Education:
     end_date: str
     grade: str
     logo: str
-
+    order: int  # Adding the 'order' attribute to help setting the order of the class
 
 @dataclass
 class Skill:
@@ -41,3 +41,4 @@ class Skill:
     name: str
     proficiency: str
     logo: str
+    order: int  # Adding the 'order' attribute to help setting the order of the class
