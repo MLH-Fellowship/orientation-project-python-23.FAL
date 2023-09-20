@@ -82,7 +82,5 @@ def skill():
         if index is not None and 0 <= index < len(data["skill"]):
             deleted_skill = data["skill"].pop(index)
             return jsonify({"message": f"Skill '{deleted_skill.name}' deleted successfully"})
-        else:
-            return jsonify({"error": "Invalid index position"}), 400
 
     return jsonify({})
