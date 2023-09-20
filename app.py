@@ -81,7 +81,17 @@ def skill():
 
     return jsonify({})
 
+def check_user_data(api_data):
+    """
+    Check if data is valid
+    """
+    if api_data is not None:
+        name = api_data.get("name")
+        phone = api_data.get("phone")
+        email = api_data.get("email")
 
+    return name, phone, email
+        
 @app.route("/resume/user", methods=["GET", "POST"])
 def user():
     """
@@ -93,19 +103,18 @@ def user():
     if request.method == "POST":
         api_data = request.get_json()
 
-    if api_data is not None:
-        name = api_data.get("name")
-        phone = api_data.get("phone")
-        email = api_data.get("email")
+        # Check if data is valid
+        if api_data is None or api_data == {}:
+            return jsonify({"message": "No data provided"}), 400
 
-        # Handle phone number
+        name, phone, email = check_user_data(api_data)        
+
         if not phone.startswith("+"):
             phone = "+" + phone
-
         user = User(name, phone, email)  # pylint: disable=W0621
         data["user"].append(user)
 
-    return jsonify({"A person Added": user})
+        return jsonify({"A person Added": user})
 
 
 @app.route("/resume/user/<int:user_id>", methods=["PUT"])
@@ -115,17 +124,14 @@ def update_user(user_id):
     """
     api_data = request.get_json()
 
-    if api_data is not None:
-        name = api_data.get("name")
-        phone = api_data.get("phone")
-        email = api_data.get("email")
+    name, phone, email = check_user_data(api_data)
 
-        user_list = data["user"]
-        user = [user for user in user_list if user.id == user_id][0]  # pylint: disable=W0621
+    user_list = data["user"]
+    user = [user for user in user_list if user.id == user_id][0]  # pylint: disable=W0621
 
-        # Update the contact
-        user.name = name
-        user.phone = phone
-        user.email = email
+    # Update the contact
+    user.name = name
+    user.phone = phone
+    user.email = email
 
     return jsonify({"Person Info Updated": user})
