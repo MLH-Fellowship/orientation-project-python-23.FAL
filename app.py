@@ -85,13 +85,14 @@ def skill():
     return jsonify({})
 
 @app.route('/resume/education/<id>', methods=['DELETE'])
-def specific_education(id):
+def specific_education(education_id):
     '''
     Handles specific Education requests
     '''
-    if not validate_index(id, len(data["skill"])):
-        return jsonify({"error": f"Education entry {id} not found"}), 404
+    if not validate_index(education_id, len(data["skill"])):
+        return jsonify({"error": f"Education entry {education_id} not found"}), 404
     if request.method == 'DELETE':
-        index = int(id)
+        index = int(education_id)
         data["skill"] = data["skill"][:index][index+1:]
-        return jsonify({"inf": "Education entry {id} has been deleted"}), 204
+        return jsonify({"inf0": "Education entry {id} has been deleted"}), 204
+    return jsonify({})
