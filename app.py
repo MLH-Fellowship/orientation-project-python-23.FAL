@@ -65,16 +65,31 @@ def education():
 
     return jsonify({})
 
-
-@app.route('/resume/skill', methods=['GET', 'POST'])
+@app.route("/resume/skill", methods=["GET", "POST"])
 def skill():
-    '''
+    """
     Handles Skill requests
-    '''
-    if request.method == 'GET':
-        return jsonify({})
+    """
+    if request.method == "GET":
+        return jsonify("skill", data["skill"])
 
-    if request.method == 'POST':
-        return jsonify({})
+    if request.method == "POST":
+        api_data = request.get_json()
+
+        # Check if data is valid
+        if api_data is None or api_data == {}:
+            return jsonify({"message": "No data provided"}), 400
+        
+        name = api_data.get("name")
+        proficiency = api_data.get("proficiency")
+        logo = api_data.get("logo")
+
+        skill = Skill(name, proficiency, logo)
+        data["skill"].append(skill)
+
+        skills = data['skill']
+        index_position = skills.index(skill)
+
+        return jsonify({"message": "New Skill added", "index position": index_position})
 
     return jsonify({})
