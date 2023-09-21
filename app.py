@@ -57,7 +57,7 @@ def experience():
 
     return jsonify({})
 
-@app.route('/resume/education', methods=['GET', 'POST'])
+@app.route('/resume/education', methods=['GET', 'POST', 'PUT'])
 def education():
     '''
     Handles education requests
@@ -77,9 +77,17 @@ def education():
         data["education"].append(new_education)
         new_education_index = len(data["education"]) - 1
         return jsonify({"id": new_education_index})
+    
+    if request.method == 'PUT':
+        update_data = request.get_json()
+        index = update_data.get("id")
+        if index is not None and 0 <= int(index) < len(data["education"]):
+            del update_data["id"]
+            updated_education = Education(**update_data)
+            data["education"][int(index)] = updated_education
+            return jsonify(data['education'][index])
 
     return jsonify({})
-
 
 @app.route('/resume/skill', methods=['GET', 'POST'])
 def skill():

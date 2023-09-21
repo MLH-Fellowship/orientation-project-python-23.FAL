@@ -84,3 +84,45 @@ def test_skill():
 
     response = app.test_client().get('/resume/skill/1000')
     assert response.status_code == 404
+
+
+def test_update_education():
+    '''
+    Update an existing education entry and check if it has been updated correctly.
+    '''
+    example_education = {
+        "course": "Engineering",
+        "school": "NYU",
+        "start_date": "October 2022",
+        "end_date": "August 2024",
+        "grade": "86%",
+        "logo": "example-logo.png"
+    }
+    # Add a new education entry
+    item_id = app.test_client().post('/resume/education', json=example_education).json['id']
+
+    # Prepare the updated education data
+    updated_education = {
+        "id": item_id,
+        "course": "Data Science",
+        "school": "Data University",
+        "start_date": "September 2020",
+        "end_date": "June 2023",
+        "grade": "90%",
+        "logo": "updated-logo.png"
+    }
+
+    # Send a PUT request to update the education entry
+    response = app.test_client().put('/resume/education', json=updated_education)
+    assert response.status_code == 200
+    del updated_education["id"]
+    assert response.json == updated_education
+
+    put_response = response.json
+    # Check if the education entry has been updated correctly
+    updated_response = app.test_client().get(f'/resume/education?index={item_id}')
+    assert updated_response.status_code == 200
+    assert updated_response.json == put_response
+
+
+test_update_education()
