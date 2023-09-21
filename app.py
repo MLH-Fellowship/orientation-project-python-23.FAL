@@ -93,3 +93,5 @@ def check_spellings():
         corrected_sentence = correct_spellings(sentence)
         
         return jsonify({ "before": sentence, "after": str(corrected_sentence) })
+    
+    return jsonify({})
