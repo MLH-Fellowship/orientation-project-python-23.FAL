@@ -109,3 +109,16 @@ def test_delete_skill():
     response = app.test_client().get('/resume/skill')
     assert skill_name not in response.json
     
+
+def test_check_spelling():
+    '''
+    Check that the spelling is corrected
+    '''
+
+    example_sentence = {"sentence": "I havv goood speling!"}
+    response = app.test_client().post('/check-spelling', json=example_sentence)
+
+    assert response.json["before"] == "I havv goood speling!"
+    assert response.json["after"] == "I have good spelling!"
+    assert response.status_code == 200
+
