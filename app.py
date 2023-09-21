@@ -45,20 +45,15 @@ def experience():
     Handle experience requests
     """
     if request.method == "GET":
-        try:
-            index = request.args.get("index")
-            if index:
-                index = int(index)
-                if 0 <= index < len(data["experience"]):
-                    specific_experience = data["experience"][index]
-                    return jsonify(specific_experience)
-                else:
-                    return jsonify({"error": "Index out of range"}), 404
+        index = request.args.get("index")
+        if index and index.isdigit():
+            index = int(index)
+            if index in range(len(data["experience"])):
+                return jsonify(data["experience"][index])
 
-            return jsonify(data["experience"])
+            return jsonify({"error": f"No Experience entry with index {index}"}), 404
 
-        except (TypeError, ValueError):
-            return (jsonify({"error": "Invalid index"}),), 400
+        return jsonify(data["experience"])
 
     if request.method == "POST":
         return jsonify({})
