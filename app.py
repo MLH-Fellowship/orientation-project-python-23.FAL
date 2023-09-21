@@ -120,9 +120,9 @@ def check_spellings():
     Handles spelling requests
     '''
     if request.method == 'POST':
-        data = request.get_json()
+        request_data = request.get_json()
 
-        sentence = data['sentence']
+        sentence = request_data['sentence']
         corrected_sentence = correct_spellings(sentence)
         return jsonify({ "before": sentence, "after": str(corrected_sentence) })
     return jsonify({})
