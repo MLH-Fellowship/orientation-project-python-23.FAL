@@ -1,9 +1,8 @@
-from textblob import TextBlob
-
-
 """
 Function utilities to be used througout the application
 """
+from textblob import TextBlob
+
 
 def correct_spellings(sentence: str):
     """
