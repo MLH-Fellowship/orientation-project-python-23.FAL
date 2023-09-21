@@ -3,7 +3,7 @@ Flask Application
 '''
 from flask import Flask, jsonify, request
 from models import Experience, Education, Skill
-from utils import correct_spellings
+from utils import validate_index, correct_spellings
 
 app = Flask(__name__)
 
@@ -49,7 +49,11 @@ def experience():
         return jsonify()
 
     if request.method == 'POST':
-        return jsonify({})
+        request_data = request.get_json()
+        experience_data = Experience(**request_data)
+        data["experience"].append(experience_data)
+        index = len(data["experience"]) - 1
+        return jsonify({"id": index})
 
     return jsonify({})
 
@@ -59,15 +63,25 @@ def education():
     Handles education requests
     '''
     if request.method == 'GET':
-        return jsonify({})
+        index = request.args.get('index')
+        if index is not None and index.isdigit():
+            index = int(index)
+            if 0 <= index < len(data["education"]):
+                return jsonify(data["education"][index])
+            return jsonify({"error": "Education entry not found"}), 404
+        return jsonify(data["education"])
 
     if request.method == 'POST':
-        return jsonify({})
+        new_education_data = request.get_json()
+        new_education = Education(**new_education_data)
+        data["education"].append(new_education)
+        new_education_index = len(data["education"]) - 1
+        return jsonify({"id": new_education_index})
 
     return jsonify({})
 
 
-@app.route('/resume/skill', methods=['GET', 'POST'])
+@app.route('/resume/skill', methods=['GET', 'POST', 'DELETE'])
 def skill():
     '''
     Handles Skill requests
@@ -78,6 +92,25 @@ def skill():
     if request.method == 'POST':
         return jsonify({})
 
+    if request.method == 'DELETE':
+        index = request.args.get("index", type=int)
+        if index is not None and 0 <= index < len(data["skill"]):
+            deleted_skill = data["skill"].pop(index)
+            return jsonify({"message": f"Skill '{deleted_skill.name}' deleted successfully"})
+
+    return jsonify({})
+
+@app.route('/resume/education/<id>', methods=['DELETE'])
+def specific_education(education_id):
+    '''
+    Handles specific Education requests
+    '''
+    if not validate_index(education_id, len(data["skill"])):
+        return jsonify({"error": f"Education entry {education_id} not found"}), 404
+    if request.method == 'DELETE':
+        index = int(education_id)
+        data["skill"] = data["skill"][:index][index+1:]
+        return jsonify({"inf0": "Education entry {id} has been deleted"}), 204
     return jsonify({})
 
 
