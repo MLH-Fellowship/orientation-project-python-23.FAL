@@ -86,9 +86,11 @@ def skill():
         # if an index is not provided, return all Skills
         if index is None:
             return jsonify(data["skill"])
-        index = int(index)
-        if 0 <= index < len(data["skill"]):
-            return jsonify(data["skill"][index])
+        # if index is a number, check if it is in range for existing Skills
+        if index.isdigit():
+            index = int(index)
+            if 0 <= index < len(data["skill"]):
+                return jsonify(data["skill"][index])
         return jsonify({"error": "Invalid index"}), 404
 
     if request.method == 'POST':
