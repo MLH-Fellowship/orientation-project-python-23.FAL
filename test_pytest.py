@@ -122,4 +122,3 @@ def test_delete_skill():
     # Check that the deleted skill is no longer in the list
     response = app.test_client().get('/resume/skill')
     assert skill_name not in response.json
-    
