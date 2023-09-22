@@ -57,7 +57,41 @@ def experience():
 
     return jsonify({})
 
-@app.route('/resume/education', methods=['GET', 'POST', 'PUT'])
+
+
+@app.route('/resume/skill', methods=['GET', 'POST', 'DELETE'])
+def skill():
+    '''
+    Handles Skill requests
+    '''
+    if request.method == 'GET':
+        return jsonify({})
+
+    if request.method == 'POST':
+        return jsonify({})
+
+    if request.method == 'DELETE':
+        index = request.args.get("index", type=int)
+        if index is not None and 0 <= index < len(data["skill"]):
+            deleted_skill = data["skill"].pop(index)
+            return jsonify({"message": f"Skill '{deleted_skill.name}' deleted successfully"})
+
+    return jsonify({})
+
+@app.route('/resume/education/<id>', methods=['DELETE'])
+def specific_education(education_id):
+    '''
+    Handles specific Education requests
+    '''
+    if not validate_index(education_id, len(data["skill"])):
+        return jsonify({"error": f"Education entry {education_id} not found"}), 404
+    if request.method == 'DELETE':
+        index = int(education_id)
+        data["skill"] = data["skill"][:index][index+1:]
+        return jsonify({"inf0": "Education entry {id} has been deleted"}), 204
+    return jsonify({})
+
+@app.route('/resume/education', methods=['GET', 'POST'])
 def education():
     '''
     Handles education requests
@@ -77,40 +111,25 @@ def education():
         data["education"].append(new_education)
         new_education_index = len(data["education"]) - 1
         return jsonify({"id": new_education_index})
-    
+
+    return jsonify({})
+
+@app.route('/resume/education', methods=['PUT'])
+def update_education():
+    '''
+    Updates the education
+    '''
     if request.method == 'PUT':
         update_data = request.get_json()
         index = update_data.get("id")
-        if index is not None and 0 <= int(index) < len(data["education"]):
+
+        if not isinstance(index, int):
+            return jsonify({"error": "Id type should be int"})
+
+        if index is not None and 0 <= index < len(data["education"]):
             del update_data["id"]
             updated_education = Education(**update_data)
             data["education"][int(index)] = updated_education
             return jsonify(data['education'][index])
 
-    return jsonify({})
-
-@app.route('/resume/skill', methods=['GET', 'POST'])
-def skill():
-    '''
-    Handles Skill requests
-    '''
-    if request.method == 'GET':
-        return jsonify({})
-
-    if request.method == 'POST':
-        return jsonify({})
-
-    return jsonify({})
-
-@app.route('/resume/education/<id>', methods=['DELETE'])
-def specific_education(education_id):
-    '''
-    Handles specific Education requests
-    '''
-    if not validate_index(education_id, len(data["skill"])):
-        return jsonify({"error": f"Education entry {education_id} not found"}), 404
-    if request.method == 'DELETE':
-        index = int(education_id)
-        data["skill"] = data["skill"][:index][index+1:]
-        return jsonify({"inf0": "Education entry {id} has been deleted"}), 204
     return jsonify({})
