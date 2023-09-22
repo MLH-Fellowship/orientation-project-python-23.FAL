@@ -54,6 +54,12 @@ def test_education():
     response = app.test_client().get('/resume/education')
     assert response.json[item_id] == example_education
 
+    response =  app.test_client().delete('/resume/education/1')
+    assert response.status_code ==  204
+
+    response = app.test_client().delete('/resume/education/100')
+    assert response.status_code == 404
+
 
 def test_skill():
     '''
@@ -86,3 +92,34 @@ def test_skill():
 
     specific_json = app.test_client().get('/resume/skill?index=0').json
     assert specific_json == specific_skill
+
+    response = app.test_client().get('/resume/skill/1')
+    assert response.status_code == 200
+
+    response = app.test_client().get('/resume/skill/1000')
+    assert response.status_code == 404
+
+def test_delete_skill():
+    '''
+    Delete a skill and then check that it's no longer in the list
+    '''
+
+    example_skill = {
+        "skill": ["Python", "Javascript", "C++"]
+    }
+
+    item_id = app.test_client().post('/resume/skill', json=example_skill).json['id']
+
+    index_to_delete = 0
+    skill_name = example_skill["skill"][index_to_delete]
+    response = app.test_client().delete(f'/resume/skill?index={index_to_delete}')
+    assert response.json[item_id] == example_skill
+
+    assert response.status_code == 200  # Check for a successful delete
+    assert "message" in response.json
+    assert response.json["message"] == f"Skill '{skill_name}' deleted successfully"
+
+    # Check that the deleted skill is no longer in the list
+    response = app.test_client().get('/resume/skill')
+    assert skill_name not in response.json
+    
