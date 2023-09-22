@@ -3,6 +3,7 @@ Flask Application
 '''
 from flask import Flask, jsonify, request
 from models import Experience, Education, Skill
+from utils import validate_index
 
 app = Flask(__name__)
 
@@ -48,7 +49,11 @@ def experience():
         return jsonify({})
 
     if request.method == 'POST':
-        return jsonify({})
+        request_data = request.get_json()
+        experience_data = Experience(**request_data)
+        data["experience"].append(experience_data)
+        index = len(data["experience"]) - 1
+        return jsonify({"id": index})
 
     return jsonify({})
 
@@ -58,15 +63,25 @@ def education():
     Handles education requests
     '''
     if request.method == 'GET':
-        return jsonify({})
+        index = request.args.get('index')
+        if index is not None and index.isdigit():
+            index = int(index)
+            if 0 <= index < len(data["education"]):
+                return jsonify(data["education"][index])
+            return jsonify({"error": "Education entry not found"}), 404
+        return jsonify(data["education"])
 
     if request.method == 'POST':
-        return jsonify({})
+        new_education_data = request.get_json()
+        new_education = Education(**new_education_data)
+        data["education"].append(new_education)
+        new_education_index = len(data["education"]) - 1
+        return jsonify({"id": new_education_index})
 
     return jsonify({})
 
 
-@app.route('/resume/skill', methods=['GET', 'POST', 'PUT'])
+@app.route('/resume/skill', methods=['GET', 'POST', 'DELETE'])
 def skill():
     '''
     Handles Skill requests
@@ -78,18 +93,54 @@ def skill():
     if request.method == 'POST':
         return jsonify({})
 
+    if request.method == 'DELETE':
+        index = request.args.get("index", type=int)
+        if index is not None and 0 <= index < len(data["skill"]):
+            deleted_skill = data["skill"].pop(index)
+            return jsonify({"message": f"Skill '{deleted_skill.name}' deleted successfully"})
+
+    return jsonify({})
+
+@app.route('/resume/skill', methods=['PUT'])
+def update_skill():
+    """
+    Update a skill in the resume.
+    """
     if request.method == 'PUT':
         skill_data = request.get_json()
+
+        if (
+            "id" not in skill_data or
+            "name" not in skill_data or
+            "proficiency" not in skill_data or
+            "logo" not in skill_data
+        ):
+            return jsonify({"error":"Missing one or more input fields id, name, proficiency, logo"})
+
+
         skill_id = skill_data.get("id")
 
-        if skill_id is not None and skill_id >= 0 and skill_id < len(data["skill"]):
-            data["skill"][skill_id] = Skill(
-                skill_data.get("name"),
-                skill_data.get("proficiency"),
-                skill_data.get("logo")
-            )
+        if not isinstance(skill_id, int):
+            return jsonify({"error": "Id should be of type int"})
+
+        if 0 <= skill_id < len(data["skill"]):
+            del skill_data["id"]
+            updated_skill = Skill(**skill_data)
+            data["skill"][int(skill_id)] = updated_skill
             return jsonify(data['skill'][skill_id])
 
-        return jsonify({"error": "Invalid Skill ID"}), 400
+        return jsonify({"error": "Invalid Skill ID"})
+    return jsonify({})
 
+@app.route('/resume/education/<id>', methods=['DELETE'])
+def specific_education(education_id):
+    '''
+    Handles specific Education requests
+    '''
+    if not validate_index(education_id, len(data["skill"])):
+        return jsonify({"error": f"Education entry {education_id} not found"}), 404
+    if request.method == 'DELETE':
+        index = int(education_id)
+        data["skill"] = data["skill"][:index][index+1:]
+        return jsonify({"inf0": "Education entry {id} has been deleted"}), 204
     return jsonify({})
