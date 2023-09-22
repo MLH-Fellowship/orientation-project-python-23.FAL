@@ -94,12 +94,12 @@ def check_user_data(api_data):
     return name, phone, email  # pylint: disable=R1710
 
 @app.route("/resume/user", methods=["GET", "POST"])
-def user(): # pylint: disable=R1710
+def user() -> dict:
     """
     Handles user requests
     """
     if request.method == "GET":
-        return {"user": data["user"]}  # pylint: disable=R1710
+        return jsonify({"user": data["user"]})
 
     if request.method == "POST":
         api_data = request.get_json()
@@ -116,6 +116,7 @@ def user(): # pylint: disable=R1710
         data["user"].append(user)
 
         return jsonify({"A person Added": user})
+    return jsonify({})
 
 
 @app.route("/resume/user/<int:user_id>", methods=["PUT"])
