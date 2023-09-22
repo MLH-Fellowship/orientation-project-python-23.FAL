@@ -21,7 +21,7 @@ class Experience:
     end_date: str
     description: str
     logo: str
-    order: int  # Adding the 'order' attribute that can be of use for sorting the order of experience entries in a resume.
+    order: int  # Adding the 'order' attribute. It defines the position of the Experience class and can be of use for sorting the order of experience in a resume.
 
 @dataclass
 class Education:
@@ -35,7 +35,8 @@ class Education:
     end_date: str
     grade: str
     logo: str
-    order: int  # Adding the 'order' attribute that can be of use for sorting the order of education entries in a resume.
+    order: int  # Adding the 'order' attribute. It defines the position of the Education class and can be of use for sorting the order of experience in a resume.
+
 @dataclass
 class Skill:
     '''
@@ -45,4 +46,4 @@ class Skill:
     name: str
     proficiency: str
     logo: str
-    order: int  # Adding the 'order' attribute that can be of use for sorting the order of skill entries in a resume.
+    order: int  # Adding the 'order' attribute. It defines the position of the skill class and can be of use for sorting the order of experience in a resume.
