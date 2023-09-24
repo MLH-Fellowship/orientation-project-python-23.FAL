@@ -115,7 +115,7 @@ def skill():
     """
     Handles Skill requests
     """
-    
+
     if request.method == 'GET':
         index = request.args.get("index")
         # if an index is not provided, return all Skills
