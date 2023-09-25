@@ -45,7 +45,7 @@ def hello_world():
 def experience():
     """
     Handle experience requests
-    """
+    '''
     if request.method == "GET":
         index = request.args.get("index")
         if index and index.isdigit():
@@ -114,9 +114,10 @@ def education():
 def skill():
     """
     Handles Skill requests
-    """
-    if request.method == "GET":
-        return jsonify({})
+    '''
+    if request.method == 'GET':
+        skills_data = data["skill"]
+        return jsonify(skills_data)
 
     if request.method == "POST":
         return jsonify({})
@@ -131,6 +132,36 @@ def skill():
 
     return jsonify({})
 
+@app.route('/resume/skill', methods=['PUT'])
+def update_skill():
+    """
+    Update a skill in the resume.
+    """
+    if request.method == 'PUT':
+        skill_data = request.get_json()
+
+        if (
+            "id" not in skill_data or
+            "name" not in skill_data or
+            "proficiency" not in skill_data or
+            "logo" not in skill_data
+        ):
+            return jsonify({"error":"Missing one or more input fields id, name, proficiency, logo"})
+
+
+        skill_id = skill_data.get("id")
+
+        if not isinstance(skill_id, int):
+            return jsonify({"error": "Id should be of type int"})
+
+        if 0 <= skill_id < len(data["skill"]):
+            del skill_data["id"]
+            updated_skill = Skill(**skill_data)
+            data["skill"][int(skill_id)] = updated_skill
+            return jsonify(data['skill'][skill_id])
+
+        return jsonify({"error": "Invalid Skill ID"})
+    return jsonify({})
 
 @app.route("/resume/education/<id>", methods=["DELETE"])
 def specific_education(education_id):

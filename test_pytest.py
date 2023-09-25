@@ -86,6 +86,7 @@ def test_skill():
     response = app.test_client().get("/resume/skill")
     assert response.json[item_id] == example_skill
 
+
     response = app.test_client().get('/resume/skill/1')
     assert response.status_code == 200
 
@@ -115,4 +116,31 @@ def test_delete_skill():
     # Check that the deleted skill is no longer in the list
     response = app.test_client().get('/resume/skill')
     assert skill_name not in response.json
-    
+
+def test_update_skill():
+    '''
+    Update an existing skill by passing the ID in the JSON request
+    '''
+
+    updated_skill = {
+        "id": 0,
+        "name": "Updated Skill",
+        "proficiency": "5-7 years",
+        "logo": "example-logo.png"
+    }
+
+    # Perform the PUT request to update the skill without passing ID in the URL
+    response = app.test_client().put('/resume/skill', json=updated_skill)
+
+    assert response.status_code == 200
+    assert response.json["name"] == updated_skill["name"]
+
+    # Check if the skill has been updated in the list
+    get_response = app.test_client().get('/resume/skill')
+    updated_skill_list = get_response.json
+
+    skill_id = updated_skill["id"]
+    del updated_skill["id"]
+
+    assert len(updated_skill_list) == 1
+    assert updated_skill_list[skill_id] == updated_skill
