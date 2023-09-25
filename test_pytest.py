@@ -76,3 +76,33 @@ def test_skill():
 
     response = app.test_client().get('/resume/skill')
     assert response.json[item_id] == example_skill
+
+def test_delete_experience():
+    """
+    Test Case: test_delete_experience
+    Description: Delete an experience and then check that it's no longer in the list
+    """
+
+    example_experience = {
+        "title": "Software Engineer",
+        "company": "Tech Corp",
+        "start_date": "January 2020",
+        "end_date": "December 2021",
+        "description": "Developing software solutions",
+        "logo": "example-logo.png",
+    }
+
+    # Add a new experience
+    item_id = (
+        app.test_client().post("/resume/experience", json=example_experience).json["id"]
+    )
+
+    # Delete the added experience
+    response = app.test_client().delete(f'/resume/experience?index={item_id}')
+    assert response.status_code == 200  # Check for a successful delete
+    assert "message" in response.json
+    assert response.json["message"] == "Experience deleted successfully"
+
+    # Check that the deleted experience is no longer in the list
+    response_after_deletion = app.test_client().get("/resume/experience")
+    assert item_id not in response_after_deletion.json
