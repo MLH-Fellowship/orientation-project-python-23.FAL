@@ -1,6 +1,10 @@
 '''
-Flask Application
+Title: Resume Flask Application
+Author: Your Name
+Date: September 20, 2023
+Description: This is a Flask application for a resume API.
 '''
+
 from flask import Flask, jsonify, request
 from models import Experience, Education, Skill
 
@@ -30,22 +34,24 @@ data = {
     ]
 }
 
-
 @app.route('/test')
 def hello_world():
     '''
-    Returns a JSON test message
+    Route: /test
+    Method: GET
+    Description: Returns a JSON test message.
     '''
     return jsonify({"message": "Hello, World!"})
-
 
 @app.route('/resume/experience', methods=['GET', 'POST'])
 def experience():
     '''
-    Handle experience requests
+    Route: /resume/experience
+    Methods: GET, POST
+    Description: Handles experience requests.
     '''
     if request.method == 'GET':
-        return jsonify()
+        return jsonify({})
 
     if request.method == 'POST':
         return jsonify({})
@@ -55,7 +61,9 @@ def experience():
 @app.route('/resume/education', methods=['GET', 'POST'])
 def education():
     '''
-    Handles education requests
+    Route: /resume/education
+    Methods: GET, POST
+    Description: Handles education requests.
     '''
     if request.method == 'GET':
         return jsonify({})
@@ -64,12 +72,13 @@ def education():
         return jsonify({})
 
     return jsonify({})
-
 
 @app.route('/resume/skill', methods=['GET', 'POST'])
 def skill():
     '''
-    Handles Skill requests
+    Route: /resume/skill
+    Methods: GET, POST
+    Description: Handles Skill requests.
     '''
     if request.method == 'GET':
         return jsonify({})
@@ -78,3 +87,13 @@ def skill():
         return jsonify({})
 
     return jsonify({})
+
+@app.route('/resume/reorder', methods=['POST'])
+def reorder_sections():
+    '''
+    Route: /resume/reorder
+    Method: POST
+    Description: Implements the logic to reorder sections.
+    '''
+    # Implement the logic to reorder sections here
+    return jsonify({"message": "Sections Reordered"})
