@@ -115,4 +115,33 @@ def test_delete_skill():
     # Check that the deleted skill is no longer in the list
     response = app.test_client().get('/resume/skill')
     assert skill_name not in response.json
-    
+
+def test_update_experience():
+    '''
+    Update an existing experience and check that it has been updated successfully
+    '''
+    # Update the experience
+    updated_experience = {
+        "id": 0,
+        "title": "Updated Title",
+        "company": "Updated Company",
+        "start_date": "Updated Start Date",
+        "end_date": "Updated End Date",
+        "description": "Updated Description",
+        "logo": "updated-logo.png"
+    }
+
+    response = app.test_client().put('/resume/experience', json=updated_experience)
+
+    assert response.status_code == 200
+    assert response.json["title"] == updated_experience["title"]
+
+    # Check if the skill has been updated in the list
+    get_response = app.test_client().get('/resume/experience')
+    updated_experience_list = get_response.json
+
+    experience_id = updated_experience["id"]
+    del updated_experience["id"]
+
+    assert len(updated_experience_list) == 1
+    assert updated_experience_list[experience_id] == updated_experience

@@ -86,8 +86,42 @@ def experience():
 
     return jsonify({})
 
+@app.route('/resume/experience', methods=['PUT'])
+def update_experience():
+    """
+    Update a experience in a resume
+    """
+    if request.method == 'PUT':
+        experience_data = request.get_json()
+        if (
+            "id" not in experience_data or
+            "title" not in experience_data or
+            "company" not in experience_data or
+            "start_date" not in experience_data
+        ):
+            return jsonify({"error":"Missing one or more input fields"})
 
-@app.route("/resume/education", methods=["GET", "POST"])
+        if (
+            "end_date" not in experience_data or
+            "description" not in experience_data or
+            "logo" not in experience_data
+        ):
+            return jsonify({"error":"Missing one or more input fields"})
+
+        experience_id = experience_data.get("id")
+        if not isinstance(experience_id, int):
+            return jsonify({"error": "Id should be of type int"})
+
+        if 0 <= experience_id < len(data["experience"]):
+            del experience_data["id"]
+            updated_experience = Experience(**experience_data)
+            data["experience"][int(experience_id)] = updated_experience
+            return jsonify(data['experience'][experience_id])
+
+        return jsonify({"error": "Invalid Skill ID"})
+    return jsonify({})
+
+@app.route('/resume/education', methods=['GET', 'POST'])
 def education():
     """
     Handles education requests
