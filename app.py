@@ -121,8 +121,10 @@ def check_spellings():
     '''
     if request.method == 'POST':
         request_data = request.get_json()
-
-        sentence = request_data['sentence']
+        try:
+            sentence = request_data['sentence']
+        except KeyError:
+            return jsonify({"error": "The 'sentence' key is not provided in the JSON data"}), 400
         corrected_sentence = correct_spellings(sentence)
         return jsonify({ "before": sentence, "after": str(corrected_sentence) })
     return jsonify({})
