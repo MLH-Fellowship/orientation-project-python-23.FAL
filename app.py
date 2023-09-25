@@ -86,30 +86,6 @@ def experience():
 
     return jsonify({})
 
-
-@app.route("/resume/education", methods=["GET", "POST"])
-def education():
-    """
-    Handles education requests
-    """
-    if request.method == "GET":
-        index = request.args.get("index")
-        if index is not None and index.isdigit():
-            index = int(index)
-            if 0 <= index < len(data["education"]):
-                return jsonify(data["education"][index])
-            return jsonify({"error": "Education entry not found"}), 404
-        return jsonify(data["education"])
-
-    if request.method == "POST":
-        new_education_data = request.get_json()
-        new_education = Education(**new_education_data)
-        data["education"].append(new_education)
-        new_education_index = len(data["education"]) - 1
-        return jsonify({"id": new_education_index})
-    return jsonify({})
-
-
 @app.route("/resume/skill", methods=["GET", "POST", "DELETE"])
 def skill():
     """
@@ -143,4 +119,47 @@ def specific_education(education_id):
         index = int(education_id)
         data["skill"] = data["skill"][:index][index + 1 :]
         return jsonify({"inf0": "Education entry {id} has been deleted"}), 204
+    return jsonify({})
+
+@app.route('/resume/education', methods=['GET', 'POST'])
+def education():
+    '''
+    Handles education requests
+    '''
+    if request.method == 'GET':
+        index = request.args.get('index')
+        if index is not None and index.isdigit():
+            index = int(index)
+            if 0 <= index < len(data["education"]):
+                return jsonify(data["education"][index])
+            return jsonify({"error": "Education entry not found"}), 404
+        return jsonify(data["education"])
+
+    if request.method == 'POST':
+        new_education_data = request.get_json()
+        new_education = Education(**new_education_data)
+        data["education"].append(new_education)
+        new_education_index = len(data["education"]) - 1
+        return jsonify({"id": new_education_index})
+
+    return jsonify({})
+
+@app.route('/resume/education', methods=['PUT'])
+def update_education():
+    '''
+    Updates the education
+    '''
+    if request.method == 'PUT':
+        update_data = request.get_json()
+        index = update_data.get("id")
+
+        if not isinstance(index, int):
+            return jsonify({"error": "Id type should be int"})
+
+        if index is not None and 0 <= index < len(data["education"]):
+            del update_data["id"]
+            updated_education = Education(**update_data)
+            data["education"][int(index)] = updated_education
+            return jsonify(data['education'][index])
+
     return jsonify({})
