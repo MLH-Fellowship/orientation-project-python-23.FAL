@@ -156,7 +156,7 @@ async def chat_gpt_description():
     '''
     if request.method == 'POST':
         index = request.args.get('index')
-        api_key = request.args.get('api_key')
+        api_key = request.form.get('api_key') 
         if index is not None and index.isdigit():
             index = int(index)
             if 0 <= index < len(data["experience"]):
@@ -173,24 +173,36 @@ async def chat_gpt_description():
                 prompt += f"End Date: {experience.end_date}\n"
                 response = await _send_chat_request(prompt, api_key)
                 response = response.choices[0].message.content
-                data["experience"][index].description = response
-                return jsonify({"id": index})
+                return jsonify({"id": index, "response": response})
             return jsonify({"error": "Experience entry not found"}), 404
-        return jsonify({})
+        return jsonify({"error": "Invalid index"}), 400
 
 async def _send_chat_request(prompt, api_key):
     '''
     Helper function that handles the chat request to the OpenAI API.
     '''
+    response = ""
     oai.api_key = api_key
     formatted_message = [
-            {"role": "User", "content": prompt} 
+            {"role": "user", "content": prompt} 
     ]
     try:
         response: Any = await oai.ChatCompletion.acreate(
-            "model": "gpt-3.5-turbo",
-            "messages": formatted_message,
+            model= "gpt-3.5-turbo",
+            messages= formatted_message,
         )
     except Exception as e:
         print(f"OpenAI service failed to complete the chat: {e}")
     return response
+
+@app.route('/resume/approve', methods=['POST'])
+def approve_description():
+    '''
+    Gets user approval to use the chat gpt generated description.
+    '''
+    index = request.form.get('index')
+    description = request.form.get('description')
+    data["experience"][index].description = description
+    
+    return jsonify({"status": "approved"})
+
