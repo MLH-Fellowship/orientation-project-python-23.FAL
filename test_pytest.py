@@ -15,6 +15,7 @@ def test_client():
 
 def test_experience():
     """
+    First experience POST should be rejected due to bad data
     Add a new experience and then get all experiences.
 
     Check that it returns the new experience in that list
@@ -27,6 +28,13 @@ def test_experience():
         "description": "Writing JavaScript Code",
         "logo": "example-logo.png",
     }
+
+    bad_example_experience = {
+        "title": "Missing Developer",
+    }
+
+    bad_response = app.test_client().post("/resume/experience", json=bad_example_experience)
+    assert bad_response.status_code == 400
 
     item_id = (
         app.test_client().post("/resume/experience", json=example_experience).json["id"]
