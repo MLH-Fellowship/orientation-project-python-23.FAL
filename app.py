@@ -59,6 +59,16 @@ def experience():
 
     if request.method == "POST":
         request_data = request.get_json()
+        experienceProperties = ["title","company","start_date","end_date","description","logo"]
+        # Checks if an experience property is missing in request_data
+        for property in experienceProperties:
+            if property not in request_data:
+                return jsonify({"error":"Missing one or more input fields"}), 400
+        # Removes any unnecessary properties in request_data
+        for key in list(request_data.keys()):
+            if key not in experienceProperties:
+                del request_data[key]
+
         experience_data = Experience(**request_data)
         data["experience"].append(experience_data)
         index = len(data["experience"]) - 1
