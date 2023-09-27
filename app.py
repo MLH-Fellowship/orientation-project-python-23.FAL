@@ -64,6 +64,8 @@ def bio():
         data["bio"] = []
         return jsonify({"message": "Bio deleted successfully"}), 200
 
+    return jsonify({})
+
 @app.route("/resume/experience", methods=["GET", "POST", "DELETE"])
 def experience():
     """
