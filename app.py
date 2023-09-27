@@ -3,12 +3,19 @@ Flask Application
 """
 # pylint: disable=too-many-return-statements
 from flask import Flask, jsonify, request
-from models import Experience, Education, Skill
+from models import Experience, Education, Skill, Bio
 from utils import validate_index
 
 app = Flask(__name__)
 
 data = {
+    "bio": [
+        Bio(
+            "I'm a Software Developer with 2 years of experience working with Python, "
+            "JavaScript, and React. I'm currently looking for a new role. "
+            "I'm also a student at the University of Tech, studying Computer Science."
+        )
+    ],
     "experience": [
         Experience(
             "Software Developer",
@@ -40,6 +47,24 @@ def hello_world():
     """
     return jsonify({"message": "Hello, World!"})
 
+@app.route("/resume/bio", methods=["GET", "POST", "DELETE"])
+def bio():
+    """
+    Handles bio requests
+    """
+    if request.method == "GET":
+        return jsonify(data["bio"])
+
+    if request.method == "POST":
+        request_data = request.get_json()
+        data["bio"] = Bio(**request_data)
+        return jsonify({"message": "Bio updated successfully"}), 200
+
+    if request.method == "DELETE":
+        data["bio"] = []
+        return jsonify({"message": "Bio deleted successfully"}), 200
+
+    return jsonify({})
 
 @app.route("/resume/experience", methods=["GET", "POST", "DELETE"])
 def experience():
@@ -116,7 +141,10 @@ def skill():
     Handles Skill requests
     """
     if request.method == "GET":
-        return jsonify({})
+        index = request.args.get("index", type=int)
+        if index is not None and 0 <= index < len(data["skill"]):
+            return jsonify(data["skill"][index])
+        return jsonify(data["skill"])
 
     if request.method == "POST":
         return jsonify({})

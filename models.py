@@ -7,6 +7,12 @@ Models for the Resume API. Each class is related to
 from dataclasses import dataclass
 from typing import List
 
+@dataclass
+class Bio:
+    '''
+    Bio Class
+    '''
+    about: str
 
 @dataclass
 class PersonalInfo:
