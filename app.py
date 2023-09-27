@@ -177,6 +177,7 @@ async def chat_gpt_description():
             return jsonify({"error": "Experience entry not found"}), 404
         return jsonify({"error": "Invalid index"}), 400
 
+
 async def _send_chat_request(prompt, api_key):
     '''
     Helper function that handles the chat request to the OpenAI API.
@@ -195,6 +196,7 @@ async def _send_chat_request(prompt, api_key):
         print(f"OpenAI service failed to complete the chat: {e}")
     return response
 
+
 @app.route('/resume/approve', methods=['POST'])
 def approve_description():
     '''
@@ -205,4 +207,3 @@ def approve_description():
     data["experience"][index].description = description
     
     return jsonify({"status": "approved"})
-

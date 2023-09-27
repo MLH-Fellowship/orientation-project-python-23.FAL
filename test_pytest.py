@@ -2,6 +2,7 @@
 Tests in Pytest
 """
 from app import app
+from unittest.mock import patch, MagicMock
 
 
 def test_client():
@@ -116,3 +117,43 @@ def test_delete_skill():
     response = app.test_client().get('/resume/skill')
     assert skill_name not in response.json
     
+def test_chat_gpt_description():
+    '''
+    Generate a description using chat GPT
+    '''
+    example_experience = {
+        "title": "Software Developer",
+        "company": "A Cooler Company",
+        "start_date": "October 2022",
+        "end_date": "Present",
+        "description": "Writing JavaScript Code",
+        "logo": "example-logo.png",
+    }
+
+def test_chat_gpt_description():
+    """
+    Test the chat_gpt_description route.
+
+    - Test a valid request with a valid index.
+    - Test an invalid index.
+    - Test an index that is out of bounds.
+    """
+    with patch('app._send_chat_request') as mock_send_chat_request:
+        # Mock the OpenAI API response
+        mock_response = MagicMock(choices=[MagicMock(message=MagicMock(content='Generated description'))])
+        mock_send_chat_request.return_value = mock_response
+
+        # Test a valid request with a valid index
+        valid_index_response = app.test_client().post("/resume/gpt_description?index=0", data={'api_key': 'your_api_key'})
+        assert valid_index_response.status_code == 200
+        assert 'response' in valid_index_response.json
+
+    # Test an invalid index
+    invalid_index_response = app.test_client().post("/resume/gpt_description?index=invalid", data={'api_key': 'your_api_key'})
+    assert invalid_index_response.status_code == 400
+    assert 'error' in invalid_index_response.json
+
+    # Test an index that is out of bounds
+    out_of_bounds_index_response = app.test_client().post("/resume/gpt_description?index=999", data={'api_key': 'your_api_key'})
+    assert out_of_bounds_index_response.status_code == 404
+    assert 'error' in out_of_bounds_index_response.json
