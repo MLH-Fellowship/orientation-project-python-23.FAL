@@ -44,7 +44,7 @@ def test_experience():
 def test_education():
     """
     Add a new education and then get all educations.
-
+    First POST request should be rejected due to bad data
     Check that it returns the new education in that list
     """
     example_education = {
@@ -55,6 +55,13 @@ def test_education():
         "grade": "86%",
         "logo": "example-logo.png",
     }
+    bad_example_education = {
+        "school": "NYU"
+    }
+
+    bad_response = app.test_client().post("/resume/education",json=bad_example_education)
+    assert bad_response.status_code == 400
+
     item_id = (
         app.test_client().post("/resume/education", json=example_education).json["id"]
     )
