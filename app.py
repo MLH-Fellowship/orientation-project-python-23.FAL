@@ -193,7 +193,9 @@ async def _send_chat_request(prompt, api_key):
             messages= formatted_message,
         )
     except Exception as exception:
-        raise OpenAIServiceError(f"OpenAI service failed to complete the chat: {exception}") from exception
+        raise OpenAIServiceError(
+            f"OpenAI service failed to complete the chat: {exception}"
+        ) from exception
     return response
 
 
