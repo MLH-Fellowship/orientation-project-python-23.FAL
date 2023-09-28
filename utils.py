@@ -18,3 +18,11 @@ def validate_index(index, size):
         if 0 <= index < size:
             return True
     return False
+
+class OpenAIServiceError(Exception):
+    """
+    Custom exception for OpenAI service errors.
+    """
+
+    def __init__(self, message):
+        super().__init__(message)

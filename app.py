@@ -2,9 +2,11 @@
 Flask Application
 """
 # pylint: disable=too-many-return-statements
+from typing import Any
 from flask import Flask, jsonify, request
+import openai as oai
 from models import Experience, Education, Skill
-from utils import validate_index
+from utils import validate_index, OpenAIServiceError
 
 app = Flask(__name__)
 
@@ -144,3 +146,66 @@ def specific_education(education_id):
         data["skill"] = data["skill"][:index][index + 1 :]
         return jsonify({"inf0": "Education entry {id} has been deleted"}), 204
     return jsonify({})
+
+
+@app.route('/resume/gpt_description', methods=['POST'])
+async def chat_gpt_description():
+    '''
+    Uses openAI API to generate descriptions for the exeprience field.
+    It creates a prompt using the experience data and sends it to the API.
+    '''
+    if request.method == 'POST':
+        index = request.args.get('index')
+        api_key = request.form.get('api_key')
+        if index is not None and index.isdigit():
+            index = int(index)
+            if 0 <= index < len(data["experience"]):
+                experience_data = data["experience"][index]
+                prompt = """
+                I need you to help me write a description for my experience section
+                on my resume. Respond with the description and nothing else, do not
+                include a greeting or any other text in your response. Use this 
+                information to help you write a description for the following entry:
+                """
+                prompt += f"\nTitle: {experience_data.title}\n"
+                prompt += f"Company: {experience_data.company}\n"
+                prompt += f"Start Date: {experience_data.start_date}\n"
+                prompt += f"End Date: {experience_data.end_date}\n"
+                response = await _send_chat_request(prompt, api_key)
+                response = response.choices[0].message.content
+                return jsonify({"id": index, "response": response})
+            return jsonify({"error": "Experience entry not found"}), 404
+        return jsonify({"error": "Invalid index"}), 400
+
+
+async def _send_chat_request(prompt, api_key):
+    '''
+    Helper function that handles the chat request to the OpenAI API.
+    '''
+    response = ""
+    oai.api_key = api_key
+    formatted_message = [
+            {"role": "user", "content": prompt}
+    ]
+    try:
+        response: Any = await oai.ChatCompletion.acreate(
+            model= "gpt-3.5-turbo",
+            messages= formatted_message,
+        )
+    except Exception as exception:
+        raise OpenAIServiceError(
+            f"OpenAI service failed to complete the chat: {exception}"
+        ) from exception
+    return response
+
+
+@app.route('/resume/approve', methods=['POST'])
+def approve_description():
+    '''
+    Gets user approval to use the chat gpt generated description.
+    '''
+    index = request.form.get('index')
+    description = request.form.get('description')
+    data["experience"][index].description = description
+
+    return jsonify({"status": "approved"})
