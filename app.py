@@ -103,6 +103,15 @@ def education():
 
     if request.method == "POST":
         new_education_data = request.get_json()
+        education_properties = ['course','school','start_date','end_date','grade','logo']
+        # Checks if an education property is missing in new_education_data
+        for prop in education_properties:
+            if prop not in new_education_data:
+                return jsonify({"error":"Missing one or more input fields"}), 400
+        # Removes any unnecessary properties in new_education_data
+        for key in list(new_education_data.keys()):
+            if key not in education_properties:
+                del new_education_data[key]
         new_education = Education(**new_education_data)
         data["education"].append(new_education)
         new_education_index = len(data["education"]) - 1
