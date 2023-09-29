@@ -1,7 +1,11 @@
-"""
-Flask Application
-"""
-# pylint: disable=too-many-return-statements
+
+'''
+Title: Resume Flask Application
+Author: Your Name
+Date: September 20, 2023
+Description: This is a Flask application for a resume API.
+'''
+
 from flask import Flask, jsonify, request
 from models import Experience, Education, Skill
 from utils import validate_index
@@ -33,25 +37,30 @@ data = {
 }
 
 
-@app.route("/test")
+@app.route('/test')
 def hello_world():
-    """
-    Returns a JSON test message
-    """
+    '''
+    Route: /test
+    Method: GET
+    Description: Returns a JSON test message.
+    '''
     return jsonify({"message": "Hello, World!"})
 
-
-@app.route("/resume/experience", methods=["GET", "POST", "DELETE"])
+@app.route('/resume/experience', methods=['GET', 'POST'])
 def experience():
-    """
-    Handle experience requests
-    """
+    '''
+    Route: /resume/experience
+    Methods: GET, POST
+    Description: Handles experience requests.
+    '''
+    
     if request.method == "GET":
         index = request.args.get("index")
         if index and index.isdigit():
             index = int(index)
             if index in range(len(data["experience"])):
                 return jsonify(data["experience"][index])
+
 
             return jsonify({"error": f"No Experience entry with index {index}"}), 404
 
@@ -89,9 +98,13 @@ def experience():
 
 @app.route("/resume/education", methods=["GET", "POST"])
 def education():
-    """
-    Handles education requests
-    """
+
+    '''
+    Route: /resume/education
+    Methods: GET, POST
+    Description: Handles education requests.
+    '''
+    
     if request.method == "GET":
         index = request.args.get("index")
         if index is not None and index.isdigit():
@@ -100,6 +113,7 @@ def education():
                 return jsonify(data["education"][index])
             return jsonify({"error": "Education entry not found"}), 404
         return jsonify(data["education"])
+
 
     if request.method == "POST":
         new_education_data = request.get_json()
@@ -110,12 +124,16 @@ def education():
     return jsonify({})
 
 
-@app.route("/resume/skill", methods=["GET", "POST", "DELETE"])
+@app.route('/resume/skill', methods=['GET', 'POST'])
 def skill():
-    """
-    Handles Skill requests
-    """
+    '''
+    Route: /resume/skill
+    Methods: GET, POST
+    Description: Handles Skill requests.
+    '''
+    
     if request.method == "GET":
+
         return jsonify({})
 
     if request.method == "POST":
@@ -144,3 +162,13 @@ def specific_education(education_id):
         data["skill"] = data["skill"][:index][index + 1 :]
         return jsonify({"inf0": "Education entry {id} has been deleted"}), 204
     return jsonify({})
+
+@app.route('/resume/reorder', methods=['POST'])
+def reorder_sections():
+    '''
+    Route: /resume/reorder
+    Method: POST
+    Description: Implements the logic to reorder sections.
+    '''
+    # Implement the logic to reorder sections here
+    return jsonify({"message": "Sections Reordered"})
