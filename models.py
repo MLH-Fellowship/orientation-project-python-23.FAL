@@ -8,6 +8,17 @@ Description: This module contains data models for the Resume API.
 '''
 
 from dataclasses import dataclass
+from typing import List
+
+
+@dataclass
+class PersonalInfo:
+    '''
+    User details
+    '''
+    first_name: str
+    last_name: str
+    middle_name: str
 
 @dataclass
 class Experience:
@@ -21,7 +32,7 @@ class Experience:
     end_date: str
     description: str
     logo: str
-    order: int  # Adding the 'order' attribute. It defines the position of the Experience class and can be of use for sorting the order of experience in a resume.
+    order: int  # Adding the 'order' attribute. It defines the position of the Experience class and can be of use for sorting the order of experience in a resume in ascending order
 
 @dataclass
 class Education:
@@ -46,4 +57,16 @@ class Skill:
     name: str
     proficiency: str
     logo: str
+
     order: int  # Adding the 'order' attribute. It defines the position of the skill class and can be of use for sorting the order of experience in a resume.
+
+@dataclass
+class Project:
+    '''
+    Project class
+    '''
+    name: str
+    languages: List[str]
+    description: str
+    link: str
+    order: int  # Adding the 'order' attribute. It defines the position of the project class and can be of use for sorting the order of experience in a resume.
