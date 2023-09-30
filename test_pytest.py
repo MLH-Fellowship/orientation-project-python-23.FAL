@@ -1,6 +1,8 @@
 """
 Tests in Pytest
+'''
 """
+import json
 from app import app
 
 
@@ -11,6 +13,18 @@ def test_client():
     response = app.test_client().get("/test")
     assert response.status_code == 200
     assert response.json["message"] == "Hello, World!"
+
+def test_post_request(data: object) -> bool:
+    """
+    Validation to determine if the POST request is in the correct format
+    """
+
+    try:
+        json.loads(data)
+    except ValueError as e:
+        raise ValueError("'Data' is not in valid JSON format, please try again: ", e)
+  
+    return True
 
 
 def test_experience():
@@ -28,6 +42,11 @@ def test_experience():
         "logo": "example-logo.png",
     }
 
+    if (test_post_request(example_experience)):
+        item_id = app.test_client().post('/resume/experience',
+                                        json=example_experience).json['id']
+        response = app.test_client().get('/resume/experience')
+        assert response.json[item_id] == example_experience
     item_id = (
         app.test_client().post("/resume/experience", json=example_experience).json["id"]
     )
@@ -55,6 +74,13 @@ def test_education():
         "grade": "86%",
         "logo": "example-logo.png",
     }
+
+    if (test_post_request(example_education)):
+        item_id = app.test_client().post('/resume/education',
+                                        json=example_education).json['id']
+
+        response = app.test_client().get('/resume/education')
+        assert response.json[item_id] == example_education
     item_id = (
         app.test_client().post("/resume/education", json=example_education).json["id"]
     )
@@ -81,6 +107,13 @@ def test_skill():
         "logo": "example-logo.png",
     }
 
+    if (test_post_request(example_skill)):
+        item_id = app.test_client().post('/resume/skill',
+                                        json=example_skill).json['id']
+
+        response = app.test_client().get('/resume/skill')
+        assert response.json[item_id] == example_skill
+
     item_id = app.test_client().post("/resume/skill", json=example_skill).json["id"]
 
     response = app.test_client().get("/resume/skill")
@@ -93,9 +126,9 @@ def test_skill():
     assert response.status_code == 404
 
 def test_delete_skill():
-    '''
+    """
     Delete a skill and then check that it's no longer in the list
-    '''
+    """
 
     example_skill = {
         "skill": ["Python", "Javascript", "C++"]
