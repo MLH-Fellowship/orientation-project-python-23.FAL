@@ -15,9 +15,9 @@ def test_client():
     assert response.json["message"] == "Hello, World!"
 
 def test_post_request(data: object) -> bool:
-    '''
+    """
     Validation to determine if the POST request is in the correct format
-    '''
+    """
 
     try:
         json.loads(data)
@@ -126,9 +126,9 @@ def test_skill():
     assert response.status_code == 404
 
 def test_delete_skill():
-    '''
+    """
     Delete a skill and then check that it's no longer in the list
-    '''
+    """
 
     example_skill = {
         "skill": ["Python", "Javascript", "C++"]
