@@ -96,11 +96,16 @@ def test_education():
 
 
 def test_skill():
-    """
-    Add a new skill and then get all skills.
+    '''
+    Add a new skill and then get all skills. 
+    
+    Check that it returns the new skill in that list.
 
-    Check that it returns the new skill in that list
-    """
+    Make a GET request for a specific Skill, with an index as input.
+
+    Check that the specific Skill is returned in JSON format
+    '''
+
     example_skill = {
         "name": "JavaScript",
         "proficiency": "2-4 years",
@@ -118,6 +123,9 @@ def test_skill():
 
     response = app.test_client().get("/resume/skill")
     assert response.json[item_id] == example_skill
+
+    specific_json = app.test_client().get('/resume/skill?index=0').json
+    assert specific_json == specific_skill
 
     response = app.test_client().get('/resume/skill/1')
     assert response.status_code == 200
@@ -148,4 +156,3 @@ def test_delete_skill():
     # Check that the deleted skill is no longer in the list
     response = app.test_client().get('/resume/skill')
     assert skill_name not in response.json
-    

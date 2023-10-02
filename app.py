@@ -88,10 +88,19 @@ def education():
 @app.route('/resume/skill', methods=['GET', 'POST', 'DELETE'])
 def skill():
     '''
-    Handles Skill requests
+    Handles Skill requests.
     '''
+
     if request.method == 'GET':
-        return jsonify({})
+        index = request.args.get("index")
+        # if an index is not provided, return all Skills
+        if index is None:
+            return jsonify(data["skill"])
+        if validate_index(index, len(data["skill"])):
+            index = int(index)
+            return jsonify(data["skill"][index])
+        return jsonify({"error": "Invalid index"}), 404
+
 
     if request.method == 'POST':
         new_skill_data = request.get_json()
