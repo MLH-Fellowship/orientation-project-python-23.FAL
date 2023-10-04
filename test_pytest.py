@@ -156,3 +156,26 @@ def test_delete_skill():
     # Check that the deleted skill is no longer in the list
     response = app.test_client().get('/resume/skill')
     assert skill_name not in response.json
+
+def test_check_spelling():
+    '''
+    Check that the spelling is corrected
+    '''
+
+    example_sentence = {"sentence": "I havv goood speling!"}
+    response = app.test_client().post('/check-spelling', json=example_sentence)
+
+    assert response.json["before"] == "I havv goood speling!"
+    assert response.json["after"] == "I have good spelling!"
+    assert response.status_code == 200
+
+def test_check_spelling_no_sentence():
+    '''
+    Check that the spelling is corrected
+    '''
+
+    example_sentence = {"phrase": "Helq world!"}
+    response = app.test_client().post('/check-spelling', json=example_sentence)
+
+    assert response.json["error"] == "The 'sentence' key is not provided in the JSON data"
+    assert response.status_code == 400

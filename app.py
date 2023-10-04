@@ -3,7 +3,7 @@ Flask Application
 '''
 from flask import Flask, jsonify, request
 from models import Experience, Education, Skill
-from utils import validate_index
+from utils import validate_index, correct_spellings
 from test_pytest import test_post_request
 
 app = Flask(__name__)
@@ -129,4 +129,20 @@ def specific_education(education_id):
         index = int(education_id)
         data["skill"] = data["skill"][:index][index+1:]
         return jsonify({"inf0": "Education entry {id} has been deleted"}), 204
+    return jsonify({})
+
+
+@app.route('/check-spelling', methods=['POST'])
+def check_spellings():
+    '''
+    Handles spelling requests
+    '''
+    if request.method == 'POST':
+        request_data = request.get_json()
+        try:
+            sentence = request_data['sentence']
+        except KeyError:
+            return jsonify({"error": "The 'sentence' key is not provided in the JSON data"}), 400
+        corrected_sentence = correct_spellings(sentence)
+        return jsonify({ "before": sentence, "after": str(corrected_sentence) })
     return jsonify({})
